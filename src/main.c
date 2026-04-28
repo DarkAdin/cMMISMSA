@@ -27,7 +27,11 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 /*
- *      Rev 5 - February 2021
+ *  Patch 1 - April 2026
+ *        - Added a header to the _res output file with the residue number for
+ *        better parsing
+ *
+ *  Rev 5 - February 2021
  *        - Fixed bugs in PDB atom typing and protein typing based on dictionary
  *        - Fixed bugs in PDB procesing (multichain systems)
  *        - Major code refactoring
@@ -673,6 +677,11 @@ main (argc, argv)
       fflush (stderr);
     }
 
+  for (j = 0; j < nres; j++) {
+      fprintf(f_res_step, "RES%d_Vdw;RES%d_qq;RES%d_ISM;", j+1,j+1,j+1); // Patch 1
+  }
+  fprintf (f_res_step, "\n");
+
   for (i = sframe; i < eframe; i = i + iframe)
     {
       if (verbose_flag)
@@ -872,6 +881,7 @@ main (argc, argv)
 
       /* Split desolvation by residue using MMres/MMall ratio */
       /* and do the averages also */
+
       for (j = 0; j < nres; j++)
 	{
 	  res_energies_details[j][2] +=
